@@ -12,7 +12,7 @@ function Skybox() {
   texture.mapping = THREE.EquirectangularReflectionMapping
 
   return (
-    <mesh scale={[-1.1, 0.4, 1.1]}>
+    <mesh scale={[-1.1, 0.4, 1.1]} rotation={[0, -0.3, 0]}>
       <sphereGeometry args={[500, 64, 64]} />
       <meshBasicMaterial map={texture} side={THREE.BackSide} />
     </mesh>
@@ -30,7 +30,7 @@ function App() {
           {/* Custom skybox with background.png */}
           <Skybox />
 
-          <ScrollControls pages={5} damping={0.2}>
+          <ScrollControls pages={4.2} damping={0.2}>
             {/* Lighting */}
             <ambientLight intensity={1} />
             <directionalLight position={[10, 10, 5]} intensity={1.5} />

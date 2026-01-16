@@ -33,12 +33,12 @@ export default function PrayerFlags() {
     const baseY = camera.position.y + cameraDir.y * flagDistance
     const baseZ = camera.position.z + cameraDir.z * flagDistance
 
-    // Left flag
-    leftFlagRef.current.position.set(baseX - 1.5 - spreadAmount, baseY, baseZ)
+    // Left flag - positioned so right edge is at center, left edge touches screen
+    leftFlagRef.current.position.set(baseX - 2.2 - spreadAmount, baseY, baseZ)
     leftFlagRef.current.lookAt(camera.position)
 
-    // Right flag
-    rightFlagRef.current.position.set(baseX + 1.5 + spreadAmount, baseY, baseZ)
+    // Right flag - positioned so left edge is at center, right edge touches screen
+    rightFlagRef.current.position.set(baseX + 2.2 + spreadAmount, baseY, baseZ)
     rightFlagRef.current.lookAt(camera.position)
 
     // Fade out as they spread
@@ -53,7 +53,7 @@ export default function PrayerFlags() {
   return (
     <>
       <mesh ref={leftFlagRef}>
-        <planeGeometry args={[3, 4]} />
+        <planeGeometry args={[5, 6]} />
         <meshBasicMaterial
           map={texture}
           transparent
@@ -62,7 +62,7 @@ export default function PrayerFlags() {
       </mesh>
 
       <mesh ref={rightFlagRef}>
-        <planeGeometry args={[3, 4]} />
+        <planeGeometry args={[5, 6]} />
         <meshBasicMaterial
           map={texture}
           transparent
