@@ -1,16 +1,57 @@
 import { Scroll } from '@react-three/drei'
+import { useState } from 'react'
+
+// Interactive glass card wrapper with hover glow effect
+function InteractiveGlass({ children, className = '', innerClassName = '' }) {
+  const [isHovering, setIsHovering] = useState(false)
+
+  return (
+    <div
+      className="relative transition-all duration-300 ease-out"
+      onMouseEnter={() => setIsHovering(true)}
+      onMouseLeave={() => setIsHovering(false)}
+      style={{
+        background: 'rgba(0, 0, 0, 0.45)',
+        backdropFilter: 'blur(14px)',
+        WebkitBackdropFilter: 'blur(14px)',
+        borderRadius: '20px',
+        transform: isHovering ? 'scale(1.02) translateY(-4px)' : 'scale(1) translateY(0)',
+        boxShadow: isHovering
+          ? '0 0 20px rgba(255,255,255,0.3), 0 10px 30px rgba(0,0,0,0.3)'
+          : 'none',
+      }}
+    >
+      {/* Border that glows on hover */}
+      <div
+        className="absolute inset-0 pointer-events-none rounded-[20px] transition-all duration-300 ease-out"
+        style={{
+          border: isHovering
+            ? '1.5px solid rgba(255,255,255,0.6)'
+            : '1px solid rgba(255,255,255,0.15)',
+          boxShadow: isHovering
+            ? '0 0 15px rgba(255,255,255,0.2)'
+            : 'none',
+        }}
+      />
+      {/* Content */}
+      <div className={`relative z-10 ${className} ${innerClassName}`}>
+        {children}
+      </div>
+    </div>
+  )
+}
 
 // Sample portfolio projects data
 const projects = [
   {
     id: 3,
-    title: 'Project Gamma',
+    title: 'Cool Things',
     description: '3D visualization tool for data analytics.',
     tech: ['Three.js', 'D3.js', 'Python'],
   },
   {
     id: 4,
-    title: 'Project Delta',
+    title: 'Lets connect',
     description: 'AI-powered content management system.',
     tech: ['Next.js', 'OpenAI', 'PostgreSQL'],
   },
@@ -18,9 +59,8 @@ const projects = [
 
 function ExperienceCard() {
   return (
-    <div
-      className="glass-card p-10 md:p-14 w-96 md:w-[550px]"
-      style={{ marginLeft: '45%' }}
+    <InteractiveGlass
+      className="p-16 md:p-20 w-[420px] md:w-[600px]"
     >
       <h3 className="text-4xl md:text-5xl font-tibetan mb-6 text-white">
         Experience
@@ -39,15 +79,15 @@ function ExperienceCard() {
           <p className="text-lg text-gray-300">Data Intelligence & Marketing Intern</p>
         </div>
       </div>
-    </div>
+    </InteractiveGlass>
   )
 }
 
 function AboutCard() {
   return (
-    <div
-      className="glass-card p-14 md:p-20 w-[95vw] md:w-[1000px] flex flex-col md:flex-row gap-12 items-center"
-      style={{ marginLeft: '5%' }}
+    <InteractiveGlass
+      className="p-20 md:p-28 w-[95vw] md:w-[1100px]"
+      innerClassName="flex flex-col md:flex-row gap-12 items-center"
     >
       {/* Left side - Text content */}
       <div className="flex-1">
@@ -87,17 +127,14 @@ function AboutCard() {
           className="w-56 h-56 md:w-72 md:h-72 object-cover rounded-3xl border-2 border-white/30 shadow-xl"
         />
       </div>
-    </div>
+    </InteractiveGlass>
   )
 }
 
-function GlassCard({ project, index }) {
+function GlassCard({ project }) {
   return (
-    <div
-      className="glass-card p-10 md:p-12 w-96 md:w-[500px]"
-      style={{
-        marginLeft: index % 2 === 0 ? '10%' : '45%',
-      }}
+    <InteractiveGlass
+      className="p-16 md:p-20 w-[420px] md:w-[550px]"
     >
       <h3 className="text-3xl md:text-4xl font-tibetan mb-4 text-white">
         {project.title}
@@ -115,7 +152,7 @@ function GlassCard({ project, index }) {
           </span>
         ))}
       </div>
-    </div>
+    </InteractiveGlass>
   )
 }
 
@@ -124,7 +161,12 @@ export default function UIOverlay() {
     <Scroll html>
       {/* Section 1: Welcome / Hero - visible over the prayer flags */}
       <section className="h-screen w-screen flex items-center justify-center">
-        <div className="text-center -mt-16">
+        <div className="text-center">
+          <img
+            src="/knott.png"
+            alt="Endless Knot"
+            className="w-40 h-40 md:w-100 md:h-56 mx-auto mb-6 drop-shadow-lg object-contain"
+          />
           <h1 className="text-6xl md:text-8xl font-tibetan text-white mb-4 drop-shadow-lg">
             Welcome
           </h1>
@@ -150,22 +192,22 @@ export default function UIOverlay() {
       </section>
 
       {/* Section 2: About Me */}
-      <section className="h-[80vh] w-screen flex items-center">
+      <section className="h-[80vh] w-screen flex items-center justify-center">
         <AboutCard />
       </section>
 
       {/* Section 3: Experience */}
-      <section className="h-[80vh] w-screen flex items-center">
+      <section className="h-[80vh] w-screen flex items-center justify-center">
         <ExperienceCard />
       </section>
 
       {/* Sections 4-5: Portfolio Projects */}
-      {projects.map((project, index) => (
+      {projects.map((project) => (
         <section
           key={project.id}
-          className="h-[80vh] w-screen flex items-center"
+          className="h-[80vh] w-screen flex items-center justify-center"
         >
-          <GlassCard project={project} index={index} />
+          <GlassCard project={project} />
         </section>
       ))}
     </Scroll>

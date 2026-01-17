@@ -1,27 +1,48 @@
 import { useGLTF } from '@react-three/drei'
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import * as THREE from 'three'
 
-export default function MountainModel() {
+export default function MountainModel({ darkMode }) {
   const { scene } = useGLTF('/mountain.glb')
+  const materialsRef = useRef([])
 
   useEffect(() => {
-    // Center the model and compute its bounding box
-    const box = new THREE.Box3().setFromObject(scene)
-    const center = box.getCenter(new THREE.Vector3())
-    const size = box.getSize(new THREE.Vector3())
-
-    // Log model info for debugging
-    console.log('Mountain model loaded:', { center, size })
-
-    // Ensure materials receive light
+    // Store original materials and set up shadows
+    materialsRef.current = []
     scene.traverse((child) => {
       if (child.isMesh) {
         child.castShadow = true
         child.receiveShadow = true
+        // Store reference to material
+        if (child.material) {
+          materialsRef.current.push(child.material)
+        }
       }
     })
   }, [scene])
+
+  useEffect(() => {
+    // Apply color adjustment based on dark mode
+    scene.traverse((child) => {
+      if (child.isMesh && child.material) {
+        if (darkMode) {
+          // Night time: lighter blue hue to match background
+          child.material.color = new THREE.Color('#7a9cc7')
+          if (child.material.emissive) {
+            child.material.emissive = new THREE.Color('#4a6a9f')
+            child.material.emissiveIntensity = 0.15
+          }
+        } else {
+          // Day time: reset to neutral/warm
+          child.material.color = new THREE.Color('#ffffff')
+          if (child.material.emissive) {
+            child.material.emissive = new THREE.Color('#000000')
+            child.material.emissiveIntensity = 0
+          }
+        }
+      }
+    })
+  }, [darkMode, scene])
 
   return (
     <primitive
